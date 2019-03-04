@@ -23,10 +23,10 @@ return [
 				'type'    => 'segment',
 				'options' => [
 					'route'    => '/train[/:action][/:id]',
-					'constraints' => array(
+					'constraints' => [
                          'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                          'id'     => '[0-9]+',
-                     )
+                     ],
 					'defaults' => [
 						'controller' => Controller\IndexController::class,
 						'action'     => 'index',
