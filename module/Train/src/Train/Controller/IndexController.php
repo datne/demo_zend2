@@ -4,7 +4,9 @@ namespace Train\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-
+use MongoDB\Driver\Manager;
+use MongoDB\Driver\Query;
+use MongoDB\Driver\BulkWrite;
 /**
  * summary
  */
@@ -20,20 +22,48 @@ class IndexController extends AbstractActionController
 
     public function indexAction()
     {
+        //mongo
+
+        $manager = new Manager("mongodb://localhost:27017");
+
+        $bulk = new BulkWrite();
+        /*insert data to collection*/
+        // $document1 = ['title' => 'attention','artist' => 'abc'];
+        // $document2 = ['title' => 'low','artist' => 'abc 2'];
+        // $document3 = ['title' => 'despacito','artist' => 'abc 3'];
+        // $bulk->insert($document1);
+        // $bulk->insert($document2);
+        // $bulk->insert($document3);
+        // $manager->executeBulkWrite('test.album', $bulk);
+
+        /*update data in collection*/
+        /*$bulk->update(
+            ['title' => 'low'],
+            ['$set' => [
+                'year' => '12345',
+            ]],
+            ['multi' => false, 'upsert' => false]);
+        $manager->executeBulkWrite('test.album', $bulk);*/
+        
+        $query = new Query([], []);
+
+        $rows = $manager->executeQuery('test.album', $query);
+        
+        //mysql
         $albums = $this->table->fetchAll();
-        foreach ($albums as $album) {
-            var_dump($album);
-        }
-        exit; 
+        return new ViewModel(array(
+         'albums' => $albums,
+         'testMongo' => $rows
+     ));
     	//disable view 	
     	//method 1 : //return false;
     	//method 2	: //return '';
-    	
+
     	//disable layout   	
     	//$viewModel = new ViewModel();
     	//$viewModel->setTerminal(true);
     	//return $viewModel;
-    	
+
     	//disalbe layout and view
     	//var_dump(__METHOD__);
     	//$resp = $this->getResponse();
