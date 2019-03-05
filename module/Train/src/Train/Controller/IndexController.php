@@ -7,6 +7,8 @@ use Zend\View\Model\ViewModel;
 use MongoDB\Driver\Manager;
 use MongoDB\Driver\Query;
 use MongoDB\Driver\BulkWrite;
+use Album\Model\Album;          
+use Album\Form\AlbumForm;
 /**
  * summary
  */
@@ -43,18 +45,18 @@ class IndexController extends AbstractActionController
                 'year' => '12345',
             ]],
             ['multi' => false, 'upsert' => false]);
-        $manager->executeBulkWrite('test.album', $bulk);*/
-        
-        $query = new Query([], []);
+            $manager->executeBulkWrite('test.album', $bulk);*/
 
-        $rows = $manager->executeQuery('test.album', $query);
-        
+            $query = new Query([], []);
+
+            $rows = $manager->executeQuery('test.album', $query);
+
         //mysql
-        $albums = $this->table->fetchAll();
-        return new ViewModel(array(
-         'albums' => $albums,
-         'testMongo' => $rows
-     ));
+            $albums = $this->table->fetchAll();
+            return new ViewModel(array(
+             'albums' => $albums,
+             'testMongo' => $rows
+         ));
     	//disable view 	
     	//method 1 : //return false;
     	//method 2	: //return '';
@@ -69,7 +71,29 @@ class IndexController extends AbstractActionController
     	//$resp = $this->getResponse();
     	//return $resp;
 
-    }
-}
+        }
 
-?>
+
+        public function addAction()
+        {
+           $form = new AlbumForm();
+           $form->get('submit')->setValue('Add');
+
+           $request = $this->getRequest();
+           if ($request->isPost()) {
+               $album = new Album();
+               $form->setInputFilter($album->getInputFilter());
+               $form->setData($request->getPost());
+
+               if ($form->isValid()) {
+                   $album->exchangeArray($form->getData());
+                   $this->getAlbumTable()->saveAlbum($album);
+
+                 // Redirect to list of albums
+                   return $this->redirect()->toRoute('album');
+               }
+           }
+           return array('form' => $form);
+       }
+   }
+   ?>

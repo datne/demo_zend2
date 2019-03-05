@@ -4,7 +4,7 @@ namespace Train\Form;
  * summary
  */
 use Zend\Form\Form;
-class Name extends Form
+class AlbumForm extends Form
 {
     /**
      * summary
